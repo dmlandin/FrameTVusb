@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PiUSB Drive Manager</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>PiUSB Drive Manager</h1>
+            <div id="status-bar" class="status-bar">
+                <span id="status-text">Loading...</span>
+                <div class="status-actions">
+                    <button id="btn-mount" class="btn btn-primary" onclick="toggleMount()">Mount</button>
+                </div>
+            </div>
+        </header>
+
+        <div id="usage-bar-container" class="usage-bar-container" style="display:none">
+            <div class="usage-bar">
+                <div id="usage-fill" class="usage-fill"></div>
+            </div>
+            <span id="usage-text" class="usage-text"></span>
+        </div>
+
+        <nav id="breadcrumb" class="breadcrumb">
+            <a href="#" onclick="navigate('')">Root</a>
+        </nav>
+
+        <div id="toolbar" class="toolbar" style="display:none">
+            <button class="btn btn-sm" onclick="showUploadDialog()">Upload Files</button>
+            <button class="btn btn-sm" onclick="showMkdirDialog()">New Folder</button>
+        </div>
+
+        <div id="file-list" class="file-list">
+            <div class="empty-state">Mount the drive to browse files.</div>
+        </div>
+
+        <!-- Upload area (hidden by default) -->
+        <div id="upload-overlay" class="overlay" style="display:none">
+            <div class="dialog">
+                <h3>Upload Files</h3>
+                <div id="drop-zone" class="drop-zone">
+                    <p>Drag & drop files here or click to browse</p>
+                    <input type="file" id="file-input" multiple style="display:none">
+                </div>
+                <div id="upload-progress" style="display:none">
+                    <div class="progress-bar"><div id="upload-fill" class="progress-fill"></div></div>
+                    <span id="upload-status"></span>
+                </div>
+                <div class="dialog-actions">
+                    <button class="btn" onclick="closeOverlay()">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mkdir dialog -->
+        <div id="mkdir-overlay" class="overlay" style="display:none">
+            <div class="dialog">
+                <h3>New Folder</h3>
+                <input type="text" id="mkdir-name" placeholder="Folder name" class="input">
+                <div class="dialog-actions">
+                    <button class="btn" onclick="closeOverlay()">Cancel</button>
+                    <button class="btn btn-primary" onclick="createFolder()">Create</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rename dialog -->
+        <div id="rename-overlay" class="overlay" style="display:none">
+            <div class="dialog">
+                <h3>Rename</h3>
+                <input type="text" id="rename-input" placeholder="New name" class="input">
+                <input type="hidden" id="rename-path">
+                <div class="dialog-actions">
+                    <button class="btn" onclick="closeOverlay()">Cancel</button>
+                    <button class="btn btn-primary" onclick="doRename()">Rename</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+[Unit]
+Description=PiUSB Web File Manager
+After=network-online.target piusb-gadget.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/opt/piusb/venv/bin/python /opt/piusb/web/app.py
+WorkingDirectory=/opt/piusb/web
+Restart=on-failure
+RestartSec=5
+User=root
+
+[Install]
+WantedBy=multi-user.target
