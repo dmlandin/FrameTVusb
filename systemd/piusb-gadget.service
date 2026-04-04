@@ -1,0 +1,12 @@
+[Unit]
+Description=PiUSB Mass Storage Gadget
+After=network.target
+DefaultDependencies=no
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/opt/piusb/scripts/setup_gadget.sh
+
+[Install]
+WantedBy=basic.target
