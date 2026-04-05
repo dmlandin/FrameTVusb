@@ -36,6 +36,7 @@ if os.path.exists(CONFIG_FILE):
 MOUNT_POINT = CONFIG['PIUSB_MOUNT']
 IMAGE_PATH = CONFIG['PIUSB_IMAGE']
 GADGET_LUN = '/sys/kernel/config/usb_gadget/piusb/functions/mass_storage.0/lun.0/file'
+GADGET_EJECT = '/sys/kernel/config/usb_gadget/piusb/functions/mass_storage.0/lun.0/forced_eject'
 
 
 def is_mounted():
@@ -61,14 +62,14 @@ def mount_image():
     if is_mounted():
         return True, "Already mounted"
 
-    # Remove from USB host first
+    # Eject from USB host first
     if is_exported():
         try:
-            with open(GADGET_LUN, 'w') as f:
-                f.write('')
+            with open(GADGET_EJECT, 'w') as f:
+                f.write('1')
             time.sleep(0.5)
         except (FileNotFoundError, PermissionError) as e:
-            return False, f"Failed to unexport from USB: {e}"
+            return False, f"Failed to eject from USB: {e}"
 
     os.makedirs(MOUNT_POINT, exist_ok=True)
     result = subprocess.run(
