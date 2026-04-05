@@ -75,6 +75,7 @@ echo 1 > functions/mass_storage.0/stall
 echo 0 > functions/mass_storage.0/lun.0/cdrom
 echo 0 > functions/mass_storage.0/lun.0/ro
 echo 0 > functions/mass_storage.0/lun.0/nofua
+echo 1 > functions/mass_storage.0/lun.0/removable
 echo "$PIUSB_IMAGE" > functions/mass_storage.0/lun.0/file
 
 # Link function to config

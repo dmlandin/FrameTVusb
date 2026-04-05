@@ -14,6 +14,7 @@ fi
 PIUSB_IMAGE="${PIUSB_IMAGE:-/piusb.bin}"
 PIUSB_MOUNT="${PIUSB_MOUNT:-/mnt/piusb}"
 GADGET_LUN="/sys/kernel/config/usb_gadget/piusb/functions/mass_storage.0/lun.0/file"
+GADGET_EJECT="/sys/kernel/config/usb_gadget/piusb/functions/mass_storage.0/lun.0/forced_eject"
 
 is_exported() {
     if [ -f "$GADGET_LUN" ] && [ -n "$(cat "$GADGET_LUN" 2>/dev/null)" ]; then
@@ -32,10 +33,10 @@ do_mount() {
         return 0
     fi
 
-    # Must unexport from USB host first
+    # Eject from USB host first
     if is_exported; then
-        echo "Removing image from USB host..."
-        echo "" > "$GADGET_LUN"
+        echo "Ejecting from USB host..."
+        echo 1 > "$GADGET_EJECT"
         sleep 1
     fi
 
