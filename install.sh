@@ -67,13 +67,17 @@ if [ -n "$BOOT_CONFIG" ]; then
         echo "  Disabled otg_mode=1 in $BOOT_CONFIG"
     fi
 
-    # Replace any existing dwc2 overlay with peripheral mode, or add it
-    if grep -q "^dtoverlay=dwc2" "$BOOT_CONFIG"; then
-        sed -i 's/^dtoverlay=dwc2.*/dtoverlay=dwc2,dr_mode=peripheral/' "$BOOT_CONFIG"
-        echo "  Updated dtoverlay=dwc2,dr_mode=peripheral in $BOOT_CONFIG"
+    # Remove any existing dwc2 overlay lines (may be under wrong section)
+    sed -i '/^dtoverlay=dwc2/d' "$BOOT_CONFIG"
+
+    # Ensure [all] section exists and add dwc2 overlay there
+    if grep -q "^\[all\]" "$BOOT_CONFIG"; then
+        sed -i '/^\[all\]/a dtoverlay=dwc2,dr_mode=peripheral' "$BOOT_CONFIG"
+        echo "  Added dtoverlay=dwc2,dr_mode=peripheral under [all] in $BOOT_CONFIG"
     else
-        echo "dtoverlay=dwc2,dr_mode=peripheral" >> "$BOOT_CONFIG"
-        echo "  Added dtoverlay=dwc2,dr_mode=peripheral to $BOOT_CONFIG"
+        # No [all] section — add one at the end
+        printf '\n[all]\ndtoverlay=dwc2,dr_mode=peripheral\n' >> "$BOOT_CONFIG"
+        echo "  Added [all] section with dtoverlay=dwc2,dr_mode=peripheral to $BOOT_CONFIG"
     fi
 fi
 
