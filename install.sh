@@ -61,11 +61,36 @@ elif [ -f /boot/config.txt ]; then
 fi
 
 if [ -n "$BOOT_CONFIG" ]; then
-    if ! grep -q "^dtoverlay=dwc2" "$BOOT_CONFIG"; then
-        echo "dtoverlay=dwc2" >> "$BOOT_CONFIG"
-        echo "  Added dtoverlay=dwc2 to $BOOT_CONFIG"
+    # Disable otg_mode=1 if present (forces host mode, blocks gadget)
+    if grep -q "^otg_mode=1" "$BOOT_CONFIG"; then
+        sed -i 's/^otg_mode=1/#otg_mode=1/' "$BOOT_CONFIG"
+        echo "  Disabled otg_mode=1 in $BOOT_CONFIG"
+    fi
+
+    # Replace any existing dwc2 overlay with peripheral mode, or add it
+    if grep -q "^dtoverlay=dwc2" "$BOOT_CONFIG"; then
+        sed -i 's/^dtoverlay=dwc2.*/dtoverlay=dwc2,dr_mode=peripheral/' "$BOOT_CONFIG"
+        echo "  Updated dtoverlay=dwc2,dr_mode=peripheral in $BOOT_CONFIG"
     else
-        echo "  dtoverlay=dwc2 already in $BOOT_CONFIG"
+        echo "dtoverlay=dwc2,dr_mode=peripheral" >> "$BOOT_CONFIG"
+        echo "  Added dtoverlay=dwc2,dr_mode=peripheral to $BOOT_CONFIG"
+    fi
+fi
+
+# Add modules-load=dwc2 to kernel command line for early loading
+BOOT_CMDLINE=""
+if [ -f /boot/firmware/cmdline.txt ]; then
+    BOOT_CMDLINE="/boot/firmware/cmdline.txt"
+elif [ -f /boot/cmdline.txt ]; then
+    BOOT_CMDLINE="/boot/cmdline.txt"
+fi
+
+if [ -n "$BOOT_CMDLINE" ]; then
+    if ! grep -q "modules-load=dwc2" "$BOOT_CMDLINE"; then
+        sed -i 's/rootwait/rootwait modules-load=dwc2/' "$BOOT_CMDLINE"
+        echo "  Added modules-load=dwc2 to $BOOT_CMDLINE"
+    else
+        echo "  modules-load=dwc2 already in $BOOT_CMDLINE"
     fi
 fi
 
