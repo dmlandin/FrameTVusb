@@ -24,16 +24,16 @@ through a web interface.
 ## Requirements
 
 - Raspberry Pi Zero W, Zero 2 W, or Zero (with USB WiFi adapter)
-- Raspberry Pi OS Lite (Bookworm or later recommended)
+- Raspberry Pi OS Lite (Bookworm) — the only supported OS at this time
 - MicroSD card (8 GB+)
-- USB data cable (micro-USB to USB-A) connected to the **USB** port (not PWR)
+- USB data cable (micro-USB to USB-A) connected to the **USB** port (not PWR) (this is the port closest to the middle on Pi Zero W)
 
 ## Quick Start
 
-1. Flash Raspberry Pi OS Lite to your SD card.
+1. Flash Raspberry Pi OS Lite (Bookworm, no desktop) to your SD card.
 2. Enable SSH and configure WiFi (via `raspi-config` or Imager advanced settings).
-3. Boot the Pi, SSH in, and clone this repo:
-
+3. Boot the Pi, SSH in, and install git via "sudo apt update && sudo apt install git -y"
+4. Clone the repo via:
 ```bash
 git clone https://github.com/dmlandin/frametvusb.git
 cd frametvusb
