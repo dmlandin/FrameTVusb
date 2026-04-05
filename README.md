@@ -12,7 +12,7 @@ through a web interface.
                                   [WiFi]
                                     |
                               [Web Interface]
-                           http://<pi-ip>:8080
+                      http://<hostname>.local:8080
 ```
 
 - A disk image file (`/piusb.bin`) is formatted as FAT32 and exposed to the
@@ -27,28 +27,70 @@ through a web interface.
 - Raspberry Pi OS Lite (Bookworm) — the only supported OS at this time
 - MicroSD card (8 GB+)
 - USB data cable (micro-USB to USB-A) connected to the **USB** port (not PWR) (this is the port closest to the middle on Pi Zero W)
+- [Raspberry Pi Imager](https://www.raspberrypi.com/software/) installed on your computer
 
 ## Quick Start
 
-1. Flash Raspberry Pi OS Lite (Bookworm, no desktop) to your SD card.
-2. Enable SSH and configure WiFi (via `raspi-config` or Imager advanced settings).
-3. Boot the Pi, SSH in, and install git via "sudo apt update && sudo apt install git -y"
-4. Clone the repo via:
+### 1. Flash the SD Card
+
+Open **Raspberry Pi Imager** and configure:
+
+- **Raspberry Pi Device**: Select your Pi model (e.g., Raspberry Pi Zero W)
+- **Operating System**: Choose **Raspberry Pi OS (other)** → **Raspberry Pi OS Lite (32-bit)** (Bookworm, no desktop). Use 64-bit only if you have a Pi Zero 2 W.
+- **Storage**: Select your MicroSD card
+
+Before writing, click **Edit Settings** (or the gear icon) to configure:
+
+- **Hostname**: Choose a name (e.g., `frametvusb`) — you'll use this to connect
+- **Username and password**: Set your login credentials
+- **Wireless LAN**: Enter your WiFi network name (SSID) and password
+- **Wireless LAN country**: Select your country (e.g., `US`)
+- **Locale settings**: Set your timezone and keyboard layout
+- **Services tab**: Enable **SSH** (use password authentication)
+
+Click **Save**, then **Write** to flash the SD card.
+
+### 2. Boot and Connect
+
+1. Insert the SD card into the Pi and power it on.
+2. Wait 3–5 minutes for the first boot to complete.
+3. SSH into the Pi from your computer:
+
 ```bash
+ssh <username>@<hostname>.local
+```
+
+For example, if you set hostname `frametvusb` and username `admin`:
+
+```bash
+ssh admin@frametvusb.local
+```
+
+> **Note:** The `.local` address uses mDNS, which works out of the box on
+> macOS, Linux, and Windows 10+. If it doesn't resolve, check your router's
+> admin page for the Pi's IP address and use that instead.
+
+### 3. Install FrameTVusb
+
+```bash
+sudo apt update && sudo apt install git -y
 git clone https://github.com/dmlandin/frametvusb.git
 cd frametvusb
 sudo ./install.sh
 ```
 
-4. Reboot:
+### 4. Reboot
 
 ```bash
 sudo reboot
 ```
 
-5. Plug the Pi's **USB** port into your host device. It will appear as a
-   USB thumb drive.
-6. Open `http://<pi-ip>:8080` in your browser to manage files.
+### 5. Connect and Use
+
+1. Plug the Pi's **USB** port (not PWR — the port closest to the middle) into
+   your host device. It will appear as a USB thumb drive.
+2. Open `http://<hostname>.local:8080` in your browser to manage files
+   (e.g., `http://frametvusb.local:8080`).
 
 ## Project Structure
 
